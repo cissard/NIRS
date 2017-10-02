@@ -1,5 +1,6 @@
 % clear all;close all;clc;
 bb=33
+
 %Specify channels (source-detectors pairs)
 SD=false(8,10);
 SD(1,1)=true;SD(1,2)=true;SD(1,3)=true;
