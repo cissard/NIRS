@@ -38,6 +38,7 @@ for t = 1:length(data)
     OD_wl1(t,:)=abs(sig_wl1(t,:)./baseline_wl1); 
     OD_wl2(t,:)=abs(sig_wl2(t,:)./baseline_wl2);
 end
+
 % compute log (optical density)
 OD_wl1 = -log(OD_wl1);
 OD_wl2 = -log(OD_wl2);
