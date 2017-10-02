@@ -10,5 +10,5 @@ The following script and functions work together (written by Cécile Issard):
 - NIRS_defineepochs: cut the time series into epochs around each stimulus period.
 - NIRS_reject: reject artefacted epochs.
 - NIRS_average: average responses from non-rejected epochs.
-- PlotAverageSimpleBlocks: plot the averages for each subject 
+- PlotAverageSimpleBlocks: plot the averages for each subject.
 
