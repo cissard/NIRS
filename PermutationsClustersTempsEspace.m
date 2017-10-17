@@ -7,7 +7,7 @@
 %c'est qu'aucun canal n'atteint la valeur seuil donc aucun canal significatif.
 
 nbabies = length(avg);
-
+nt = length(avg(1).N);
 %construction de la matrice d'adjacence qui spécifie les relations entre
 %les canaux
 adjacence=zeros(24,24);
@@ -38,64 +38,52 @@ adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 adjacence = logical(adjacence);
 
 %construction de la matrice de données
-donneesoxy=zeros(nbabies,3,length(avg(1).N),24);
+donneesoxy=zeros(nbabies,3,nt,24);
 
 for bb=1:nbabies
     for cond = 'NCD'
-        for e=1:length(avg(1).N)
+        for t=1:nt
             for ch=1:24
             if cond == 'N'
-                donneesoxy(bb,1,e,ch)=avg(bb).(cond)(e,ch,1);
+                donneesoxy(bb,1,t,ch)=avg(bb).(cond)(t,ch,1);
             elseif cond == 'C'
-                donneesoxy(bb,2,e,ch)=avg(bb).(cond)(e,ch,1);
+                donneesoxy(bb,2,t,ch)=avg(bb).(cond)(t,ch,1);
             elseif cond == 'D'
-                donneesoxy(bb,3,e,ch)=avg(bb).(cond)(e,ch,1);
+                donneesoxy(bb,3,t,ch)=avg(bb).(cond)(t,ch,1);
             end
             end
-        end
-    end
-end
-
-%on remplace les valeurs manquantes par la moyenne (echantillon-condition-canal) 
-%pour pouvoir obtenir plus tard le F de Fisher.
-for k=1:24
-    for e=1:length(avg(1).N)
-        for cond=1:3
-            ech=donneesoxy(:,cond,e,k);
-            nan=isnan(ech);
-            ech(nan)=nanmean(ech);
-            donneesoxy(:,cond,e,k)=ech;
         end
     end
 end
 
 %on remplit les vecteurs condition et sujet qui indiqueront la condition et le sujet dans le tableau de
 %données
-condition=[];
-sujet=[];
-for b=1:nbabies;
-    condition=cat(1,condition,'N');
-    sujet=cat(1,sujet,b);
-    condition=cat(1,condition,'C');
-    sujet=cat(1,sujet,b);
-    condition=cat(1,condition,'D');
-    sujet=cat(1,sujet,b);
+condition=repmat(['N','C','D']',29,1);
+sujet=reshape(repmat([1:29],3,1),[],1);
+
+%on remplace les valeurs manquantes par la moyenne (echantillon-condition-canal) 
+%pour pouvoir obtenir plus tard le F de Fisher.
+for ch=1:24
+    for cond=1:3
+        for t=1:nt
+            ech=donneesoxy(:,cond,t,ch);
+            nan=isnan(ech);
+            ech(nan)=nanmean(ech);
+            donneesoxy(:,cond,t,ch)=ech;
+        end
+    end
 end
+clear('ech')
 
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
 %colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal. 
-F=[]; %F : matrice des nb d'échantillons*24 valeurs de F (une par canal)
-for c=1:24
-    Fcanal=[];
-    for e=1:length(avg(1).N)
-        vd=[];
-        for b=1:nbabies;
-            vd=cat(1,vd,transpose(donneesoxy(b,:,e,c)));
-        end
+F=logical(zeros(nt,ch));
+for ch=1:24
+    for t=1:nt
+        vd=reshape(donneesoxy(:,:,t,ch)',[],1);
         [p, table]=anovan(vd,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
-        Fcanal=cat(1,Fcanal,table(3,6));
+        F(nt,ch)=table(3,6);
     end
-    F=cat(2,F,Fcanal);
 end
 F=cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel
 
