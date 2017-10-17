@@ -12,3 +12,6 @@ The following script and functions work together (written by Cécile Issard):
 - NIRS_average: average responses from non-rejected epochs.
 - PlotAverageSimpleBlocks: plot the averages for each subject.
 
+The following scripts and functions work with the scripts from Mehler lab:
+- plotTrials: sort NIRS trials manually
+- PermutationsTempsEspace: runs cluster-based permutation analysis for 24 channels (requires the avg structure).
