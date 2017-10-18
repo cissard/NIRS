@@ -1,5 +1,5 @@
-%Script écrit par Cécile Issard, doctorante au laboratoire psychologie de
-%la perception, Université Paris Descartes
+%Script Ã©crit par CÃ©cile Issard, doctorante au laboratoire psychologie de
+%la perception, UniversitÃ© Paris Descartes
 
 %Si message d'erreur : "Attempted to access cluster(1,:); index out of bounds because size(cluster)=[0,0].
 %Error in permutationClusters (line 96)
@@ -7,8 +7,8 @@
 %c'est qu'aucun canal n'atteint la valeur seuil donc aucun canal significatif.
 
 nbabies = length(avg);
-
-%construction de la matrice d'adjacence qui spécifie les relations entre
+nt = length(avg(1).N);
+%construction de la matrice d'adjacence qui spÃ©cifie les relations entre
 %les canaux
 adjacence=zeros(24,24);
 adjacence(1,2)=1;adjacence(1,3)=1;adjacence(1,4)=1;
@@ -37,89 +37,91 @@ adjacence(23,20)=1;adjacence(23,21)=1;adjacence(23,24)=1;
 adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 adjacence = logical(adjacence);
 
-%construction de la matrice des données
-donneesoxy=zeros(nbabies,3,length(avg(1).N),24);
+%construction de la matrice de donnÃ©es
+donneesoxy=zeros(nbabies,3,nt,24);
 
-for k=1:24
-    donneesOxy=[];
-    for e=1:length(avg(1).N)
-        donneesOxyech=[];
-        for bb=1:nbabies
-            echantillon=avg(bb).N(e,k,1);
-            donneesOxyech=cat(1,donneesOxyech,echantillon);
-        end
-    donneesOxy=cat(3,donneesOxy,donneesOxyech);
-    end
-    donneesoxy(:,1,:,k)=donneesOxy;
-    
-    donneesOxy=[];
-    for e=1:length(avg(1).C)
-        donneesOxyech=[];
-        for bb=1:nbabies
-            echantillon=avg(bb).C(e,k,1);
-            donneesOxyech=cat(1,donneesOxyech,echantillon);
-        end
-    donneesOxy=cat(3,donneesOxy,donneesOxyech);
-    end
-    donneesoxy(:,2,:,k)=donneesOxy;
-    
-    donneesOxy=[];
-    for e=1:length(avg(1).D)
-        donneesOxyech=[];
-        for bb=1:nbabies
-            echantillon=avg(bb).D(e,k,1);
-            donneesOxyech=cat(1,donneesOxyech,echantillon);
-        end
-    donneesOxy=cat(3,donneesOxy,donneesOxyech);
-    end
-    donneesoxy(:,3,:,k)=donneesOxy;
-end
-
-%on remplace les valeurs manquantes par la moyenne (echantillon-condition-canal) 
-%pour pouvoir obtenir plus tard le F de Fisher.
-for k=1:24
-    for e=1:length(avg(1).N)
-        for cond=1:3
-            ech=donneesoxy(:,cond,e,k);
-            nan=isnan(ech);
-            ech(nan)=nanmean(ech);
-            donneesoxy(:,cond,e,k)=ech;
+for bb=1:nbabies
+    for cond = 'NCD'
+        for t=1:nt
+            for ch=1:24
+            if cond == 'N'
+                donneesoxy(bb,1,t,ch)=avg(bb).(cond)(t,ch,1);
+            elseif cond == 'C'
+                donneesoxy(bb,2,t,ch)=avg(bb).(cond)(t,ch,1);
+            elseif cond == 'D'
+                donneesoxy(bb,3,t,ch)=avg(bb).(cond)(t,ch,1);
+            end
+            end
         end
     end
 end
 
 %on remplit les vecteurs condition et sujet qui indiqueront la condition et le sujet dans le tableau de
-%données
-condition=[];
-sujet=[];
-for b=1:nbabies;
-    condition=cat(1,condition,'N');
-    sujet=cat(1,sujet,b);
-    condition=cat(1,condition,'C');
-    sujet=cat(1,sujet,b);
-    condition=cat(1,condition,'D');
-    sujet=cat(1,sujet,b);
+%donnÃ©es
+condition=repmat(['N','C','D']',29,1);
+sujet=reshape(repmat([1:29],3,1),[],1);
+
+%on remplace les valeurs manquantes par la moyenne (echantillon-condition-canal) 
+%pour pouvoir obtenir plus tard le F de Fisher.
+for ch=1:24
+    for cond=1:3
+        for t=1:nt
+            ech=donneesoxy(:,cond,t,ch);
+            nan=isnan(ech);
+            ech(nan)=nanmean(ech);
+            donneesoxy(:,cond,t,ch)=ech;
+        end
+    end
 end
+clear('ech')
 
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
-%colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal. 
-F=[]; %F : matrice des nb d'échantillons*24 valeurs de F (une par canal)
-for c=1:24
-    Fcanal=[];
-    for e=1:length(avg(1).N)
-        vd=[];
-        for b=1:nbabies;
-            vd=cat(1,vd,transpose(donneesoxy(b,:,e,c)));
-        end
+%colonne avec les conditions l'une aprÃ¨s l'autre). Refait Ã  chaque Ã©chantillon-canal. 
+F=cell(nt,24);
+for ch=1:24
+    for t=1:nt
+        vd=reshape(donneesoxy(:,:,t,ch)',[],1);
         [p, table]=anovan(vd,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
-        Fcanal=cat(1,Fcanal,table(3,6));
+        F(t,ch)=table(3,6);
     end
-    F=cat(2,F,Fcanal);
 end
-F=cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel
+F=cell2mat(F); %Matrice des valeurs de F par canal et par Ã©chantillon temporel
 
-%trouver s'il existe des régions d'activité dans les données originales
-seuil=3.59; %définition libre, en fonction de la distribution du F ou pas. 
+%trouver s'il existe des rÃ©gions d'activitÃ© dans les donnÃ©es originales
+seuil=3.59; %dÃ©finition libre, en fonction de la distribution du F ou pas. 
+
+[active_t,active_ch] = find(F>=seuil);
+active_ch = unique(active_ch);
+
+active_ch_LH = intersect(active_ch,[1:12]);
+active_ch_RH = intersect(active_ch,[13:24]);
+
+% Trouver les clusters (dans le temps, pour chaque canal)
+cluster_info = [];
+cluster_num = [];
+for k1 = 1:length(active_ch)    
+    who1 = active_ch(k1);
+    t_who1 = find(F(:,who1));
+    cont = 1;
+    limL(cont) = 1;
+    for slide = 1:length(t_who1)-1
+        if t_who1(slide+1) ~= t_who1(slide)+1
+            limH(cont) = slide;
+            cont = cont+1;
+            limL(cont) = slide+1;
+        end        
+    end
+    limH(cont) = length(active_who1);
+    cluster_info_temp(1,1:length(limL)) = who1;
+    cluster_info_temp(2,:) = t_who1(limL);
+    cluster_info_temp(3,:) = t_who1(limH);
+    cluster_info_temp(4,:) = t_who1(limH) - t_who1(limL) +1;
+    cluster_info = cat(2,cluster_info,cluster_info_temp);
+    cluster_num = cat(2,cluster_num,cont);
+    clear limH limL slide cluster_info_temp active_who1 who1 cont
+end   
+clear k1
+
 
 clusters{1}=[];
 for ch=1:24;
@@ -151,7 +153,7 @@ for canal=1:23
     if ~clusters{canal}==[0 0]
         for canal2=canal+1:24
             if adjacence(canal,canal2)==1 && ~cluster{canal2}(1,:)==[0 0]
-                %déterminer si il y a un croisement entre les moments des
+                %dÃ©terminer si il y a un croisement entre les moments des
                 %deux canaux.
             end    
             if clusters{cluster}==[0 0]
@@ -163,17 +165,17 @@ for canal=1:23
 end
 region{1}=[cluster(1,:)];
 for z=1:(size(cluster,1)-1);
-        commun=intersect(cluster(z,:),cluster(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au même cluster cad s'ils ont un canal en commun
+        commun=intersect(cluster(z,:),cluster(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au mÃªme cluster cad s'ils ont un canal en commun
         difference=setdiff(cluster(z+1,:),cluster(z,:));
         if ~isempty(commun);
             region{length(region)}=[region{length(region)} difference]; % si on reste dans le meme cluster on ajoute le canal sur la meme ligne
         else
-            region{length(region)+1}=[cluster(z+1,:)]; % si nouveau cluster on passe à une autre cellule
+            region{length(region)+1}=[cluster(z+1,:)]; % si nouveau cluster on passe Ã  une autre cellule
         end
 end
 
-%retirer les doublons dans les cas où le cluster de contient qu'un seul
-%canal, les canaux étant ajoutés à cluster par couple (cf l.91).
+%retirer les doublons dans les cas oÃ¹ le cluster de contient qu'un seul
+%canal, les canaux Ã©tant ajoutÃ©s Ã  cluster par couple (cf l.91).
 for i=1:length(region)
     if region{i}(1) == region{i}(2)
         region{i}(2)=[]
@@ -196,7 +198,7 @@ for i=1:1000;
         for b=1:nbabies;
             p=[donneesOxy(b,c,1);donneesOxy(b,c,2);donneesOxy(b,c,3)]; 
             p=p(randperm(3));
-            P=cat(1,P,p); %tableau de données avec les conditions permutées
+            P=cat(1,P,p); %tableau de donnÃ©es avec les conditions permutÃ©es
         end
         [p, table]=anovan(P,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
         Fperm=cat(1, Fperm, table(3,6));
@@ -204,7 +206,7 @@ for i=1:1000;
     Fperm=cell2mat(Fperm);  
     Permutations=cat(2,Permutations,Fperm);
     
-    %trouver s'il existe des régions d'activité
+    %trouver s'il existe des rÃ©gions d'activitÃ©
     seuil=2.99;
     clusters=[];
     for k=1:24
@@ -225,16 +227,16 @@ for i=1:1000;
     else
         regions{1}=[clusters(1,:)];
         for z=1:(size(clusters,1)-1)
-            commun=intersect(clusters(z,:),clusters(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au même cluster cad s'ils ont un canal en commun
+            commun=intersect(clusters(z,:),clusters(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au mÃªme cluster cad s'ils ont un canal en commun
             difference=setdiff(clusters(z+1,:),clusters(z,:));
             if ~isempty(commun)
                 regions{length(regions)}=[regions{length(regions)} difference]; % si on reste dans le meme cluster on ajoute le canal sur la meme ligne
             else
-                regions{length(regions)+1}=[clusters(z+1,:)]; % si nouveau cluster on passe à une autre cellule
+                regions{length(regions)+1}=[clusters(z+1,:)]; % si nouveau cluster on passe Ã  une autre cellule
             end
         end
-    %retirer les doublons dans les cas où le cluster de contient qu'un seul
-%canal, les canaux étant ajoutés à cluster par couple (cf l.91).
+    %retirer les doublons dans les cas oÃ¹ le cluster de contient qu'un seul
+%canal, les canaux Ã©tant ajoutÃ©s Ã  cluster par couple (cf l.91).
         for a=1:length(regions);
             if regions{a}(1) == regions{a}(2);
                 regions{a}(2)=[];
@@ -251,13 +253,13 @@ for i=1:1000;
     clear regions;
 end
 
-%détermination de la valeur critique au-dessus de laquelle les canaux
-%seront considérés comme significatifs
+%dÃ©termination de la valeur critique au-dessus de laquelle les canaux
+%seront considÃ©rÃ©s comme significatifs
 biggerclusters=sort(biggerclusters,'descend');
 CV=biggerclusters(51); %(nombre de permutations*5%)+1
 
-%On commence par créer un compteur qui va compter le
-%nombre de permutations ayant donné un cluster supérieur au plus grand cluster des données réelles.
+%On commence par crÃ©er un compteur qui va compter le
+%nombre de permutations ayant donnÃ© un cluster supÃ©rieur au plus grand cluster des donnÃ©es rÃ©elles.
 pvalues=[]
 for t=1:length(region)
     counter=0
