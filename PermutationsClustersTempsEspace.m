@@ -90,6 +90,39 @@ F=cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel
 %trouver s'il existe des régions d'activité dans les données originales
 seuil=3.59; %définition libre, en fonction de la distribution du F ou pas. 
 
+[active_t,active_ch] = find(F>=seuil);
+active_ch = unique(active_ch);
+
+active_ch_LH = intersect(active_ch,[1:12]);
+active_ch_RH = intersect(active_ch,[13:24]);
+
+% Trouver les clusters (dans le temps, pour chaque canal)
+cluster_info = [];
+cluster_num = [];
+for k1 = 1:length(active_ch)    
+    who1 = active_ch(k1);
+    t_who1 = find(value_sig(who1,:));
+    cont = 1;
+    limL(cont) = 1;
+    for slide = 1:length(t_who1)-1
+        if t_who1(slide+1) ~= t_who1(slide)+1
+            limH(cont) = slide;
+            cont = cont+1;
+            limL(cont) = slide+1;
+        end        
+    end
+    limH(cont) = length(active_who1);
+    cluster_info_temp(1,1:length(limL)) = who1;
+    cluster_info_temp(2,:) = t_who1(limL);
+    cluster_info_temp(3,:) = t_who1(limH);
+    cluster_info_temp(4,:) = t_who1(limH) - t_who1(limL) +1;
+    cluster_info = cat(2,cluster_info,cluster_info_temp);
+    cluster_num = cat(2,cluster_num,cont);
+    clear limH limL slide cluster_info_temp active_who1 who1 cont
+end   
+clear k1
+
+
 clusters{1}=[];
 for ch=1:24;
     temps=[];
