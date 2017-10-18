@@ -77,12 +77,12 @@ clear('ech')
 
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
 %colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal. 
-F=logical(zeros(nt,ch));
+F=cell(nt,24);
 for ch=1:24
     for t=1:nt
         vd=reshape(donneesoxy(:,:,t,ch)',[],1);
         [p, table]=anovan(vd,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
-        F(nt,ch)=table(3,6);
+        F(t,ch)=table(3,6);
     end
 end
 F=cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel
