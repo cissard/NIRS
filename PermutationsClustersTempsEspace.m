@@ -1,5 +1,5 @@
-%Script écrit par Cécile Issard, doctorante au laboratoire psychologie de
-%la perception, Université Paris Descartes
+%Script Ã©crit par CÃ©cile Issard, doctorante au laboratoire psychologie de
+%la perception, UniversitÃ© Paris Descartes
 
 %Si message d'erreur : "Attempted to access cluster(1,:); index out of bounds because size(cluster)=[0,0].
 %Error in permutationClusters (line 96)
@@ -7,9 +7,12 @@
 %c'est qu'aucun canal n'atteint la valeur seuil donc aucun canal significatif.
 
 nbabies = length(avg);
-
-%construction de la matrice d'adjacence qui spécifie les relations entre
+nt = length(avg(1).N);
+nch = 24;
+%construction de la matrice d'adjacence qui spÃ©cifie les relations entre
 %les canaux
+adjacence = logical(zeros(nch,nch)); 
+%si nch ~= 24 adapter les lignes ci-dessous
 adjacence=zeros(24,24);
 adjacence(1,2)=1;adjacence(1,3)=1;adjacence(1,4)=1;
 adjacence(2,1)=1;adjacence(2,5)=1;adjacence(2,4)=1;
@@ -37,7 +40,7 @@ adjacence(23,20)=1;adjacence(23,21)=1;adjacence(23,24)=1;
 adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 adjacence = logical(adjacence);
 
-%construction de la matrice des données
+%construction de la matrice des donnÃ©es
 donneesoxy=zeros(nbabies,3,length(avg(1).N),24);
 
 for k=1:24
@@ -89,7 +92,7 @@ for k=1:24
 end
 
 %on remplit les vecteurs condition et sujet qui indiqueront la condition et le sujet dans le tableau de
-%données
+%donnÃ©es
 condition=[];
 sujet=[];
 for b=1:nbabies;
@@ -102,8 +105,8 @@ for b=1:nbabies;
 end
 
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
-%colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal. 
-F=[]; %F : matrice des nb d'échantillons*24 valeurs de F (une par canal)
+%colonne avec les conditions l'une aprÃ¨s l'autre). Refait Ã  chaque Ã©chantillon-canal. 
+F=[]; %F : matrice des nb d'Ã©chantillons*24 valeurs de F (une par canal)
 for c=1:24
     Fcanal=[];
     for e=1:length(avg(1).N)
@@ -116,10 +119,10 @@ for c=1:24
     end
     F=cat(2,F,Fcanal);
 end
-F=cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel
+F=cell2mat(F); %Matrice des valeurs de F par canal et par Ã©chantillon temporel
 
-%trouver s'il existe des régions d'activité dans les données originales
-seuil=3.59; %définition libre, en fonction de la distribution du F ou pas. 
+%trouver s'il existe des rÃ©gions d'activitÃ© dans les donnÃ©es originales
+seuil=3.59; %dÃ©finition libre, en fonction de la distribution du F ou pas. 
 
 clusters{1}=[];
 for ch=1:24;
@@ -151,7 +154,7 @@ for canal=1:23
     if ~clusters{canal}==[0 0]
         for canal2=canal+1:24
             if adjacence(canal,canal2)==1 && ~cluster{canal2}(1,:)==[0 0]
-                %déterminer si il y a un croisement entre les moments des
+                %dÃ©terminer si il y a un croisement entre les moments des
                 %deux canaux.
             end    
             if clusters{cluster}==[0 0]
@@ -163,17 +166,17 @@ for canal=1:23
 end
 region{1}=[cluster(1,:)];
 for z=1:(size(cluster,1)-1);
-        commun=intersect(cluster(z,:),cluster(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au même cluster cad s'ils ont un canal en commun
+        commun=intersect(cluster(z,:),cluster(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au mÃªme cluster cad s'ils ont un canal en commun
         difference=setdiff(cluster(z+1,:),cluster(z,:));
         if ~isempty(commun);
             region{length(region)}=[region{length(region)} difference]; % si on reste dans le meme cluster on ajoute le canal sur la meme ligne
         else
-            region{length(region)+1}=[cluster(z+1,:)]; % si nouveau cluster on passe à une autre cellule
+            region{length(region)+1}=[cluster(z+1,:)]; % si nouveau cluster on passe Ã  une autre cellule
         end
 end
 
-%retirer les doublons dans les cas où le cluster de contient qu'un seul
-%canal, les canaux étant ajoutés à cluster par couple (cf l.91).
+%retirer les doublons dans les cas oÃ¹ le cluster de contient qu'un seul
+%canal, les canaux Ã©tant ajoutÃ©s Ã  cluster par couple (cf l.91).
 for i=1:length(region)
     if region{i}(1) == region{i}(2)
         region{i}(2)=[]
@@ -196,7 +199,7 @@ for i=1:1000;
         for b=1:nbabies;
             p=[donneesOxy(b,c,1);donneesOxy(b,c,2);donneesOxy(b,c,3)]; 
             p=p(randperm(3));
-            P=cat(1,P,p); %tableau de données avec les conditions permutées
+            P=cat(1,P,p); %tableau de donnÃ©es avec les conditions permutÃ©es
         end
         [p, table]=anovan(P,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
         Fperm=cat(1, Fperm, table(3,6));
@@ -204,7 +207,7 @@ for i=1:1000;
     Fperm=cell2mat(Fperm);  
     Permutations=cat(2,Permutations,Fperm);
     
-    %trouver s'il existe des régions d'activité
+    %trouver s'il existe des rÃ©gions d'activitÃ©
     seuil=2.99;
     clusters=[];
     for k=1:24
@@ -225,16 +228,16 @@ for i=1:1000;
     else
         regions{1}=[clusters(1,:)];
         for z=1:(size(clusters,1)-1)
-            commun=intersect(clusters(z,:),clusters(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au même cluster cad s'ils ont un canal en commun
+            commun=intersect(clusters(z,:),clusters(z+1,:)); %on prend les couples de canaux > seuil et adjacents et on regarde s'il appartiennent au mÃªme cluster cad s'ils ont un canal en commun
             difference=setdiff(clusters(z+1,:),clusters(z,:));
             if ~isempty(commun)
                 regions{length(regions)}=[regions{length(regions)} difference]; % si on reste dans le meme cluster on ajoute le canal sur la meme ligne
             else
-                regions{length(regions)+1}=[clusters(z+1,:)]; % si nouveau cluster on passe à une autre cellule
+                regions{length(regions)+1}=[clusters(z+1,:)]; % si nouveau cluster on passe Ã  une autre cellule
             end
         end
-    %retirer les doublons dans les cas où le cluster de contient qu'un seul
-%canal, les canaux étant ajoutés à cluster par couple (cf l.91).
+    %retirer les doublons dans les cas oÃ¹ le cluster de contient qu'un seul
+%canal, les canaux Ã©tant ajoutÃ©s Ã  cluster par couple (cf l.91).
         for a=1:length(regions);
             if regions{a}(1) == regions{a}(2);
                 regions{a}(2)=[];
@@ -251,13 +254,13 @@ for i=1:1000;
     clear regions;
 end
 
-%détermination de la valeur critique au-dessus de laquelle les canaux
-%seront considérés comme significatifs
+%dÃ©termination de la valeur critique au-dessus de laquelle les canaux
+%seront considÃ©rÃ©s comme significatifs
 biggerclusters=sort(biggerclusters,'descend');
 CV=biggerclusters(51); %(nombre de permutations*5%)+1
 
-%On commence par créer un compteur qui va compter le
-%nombre de permutations ayant donné un cluster supérieur au plus grand cluster des données réelles.
+%On commence par crÃ©er un compteur qui va compter le
+%nombre de permutations ayant donnÃ© un cluster supÃ©rieur au plus grand cluster des donnÃ©es rÃ©elles.
 pvalues=[]
 for t=1:length(region)
     counter=0
