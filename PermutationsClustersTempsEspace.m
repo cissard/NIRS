@@ -199,11 +199,6 @@ for i=1:1000;
     clear regions;
 end
 
-%détermination de la valeur critique au-dessus de laquelle les canaux
-%seront considérés comme significatifs
-biggerclusters=sort(biggerclusters,'descend');
-CV=biggerclusters(51); %(nombre de permutations*5%)+1
-
 %On commence par créer un compteur qui va compter le
 %nombre de permutations ayant donné un cluster supérieur au plus grand cluster des données réelles.
 pvalues=[]
