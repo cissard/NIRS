@@ -8,8 +8,11 @@
 
 nbabies = length(avg);
 nt = length(avg(1).N);
+nch = 24;
 %construction de la matrice d'adjacence qui spécifie les relations entre
 %les canaux
+adjacence = logical(zeros(nch,nch)); 
+%si nch ~= 24 adapter les lignes ci-dessous
 adjacence=zeros(24,24);
 adjacence(1,2)=1;adjacence(1,3)=1;adjacence(1,4)=1;
 adjacence(2,1)=1;adjacence(2,5)=1;adjacence(2,4)=1;
@@ -38,12 +41,12 @@ adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 adjacence = logical(adjacence);
 
 %construction de la matrice de données
-donneesoxy=zeros(nbabies,3,nt,24);
+donneesoxy=zeros(nbabies,3,nt,nch);
 
 for bb=1:nbabies
     for cond = 'NCD'
         for t=1:nt
-            for ch=1:24
+            for ch=1:nch
             if cond == 'N'
                 donneesoxy(bb,1,t,ch)=avg(bb).(cond)(t,ch,1);
             elseif cond == 'C'
@@ -63,7 +66,7 @@ sujet=reshape(repmat([1:29],3,1),[],1);
 
 %on remplace les valeurs manquantes par la moyenne (echantillon-condition-canal) 
 %pour pouvoir obtenir plus tard le F de Fisher.
-for ch=1:24
+for ch=1:nch
     for cond=1:3
         for t=1:nt
             ech=donneesoxy(:,cond,t,ch);
@@ -78,7 +81,7 @@ clear('ech')
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
 %colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal. 
 F=cell(nt,24);
-for ch=1:24
+for ch=1:nch
     for t=1:nt
         vd=reshape(donneesoxy(:,:,t,ch)',[],1);
         [p, table]=anovan(vd,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
