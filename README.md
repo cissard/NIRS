@@ -15,5 +15,6 @@ The following script and functions work together (written by Cécile Issard):
 The following scripts and functions work with the scripts from Mehler lab:
 - plotTrials: sort NIRS trials manually
 - PermutationsTempsEspace: runs cluster-based permutation analysis for 24 channels (requires the avg structure). Calls the following functions:
-- anova_f
-- identify_clusters
+- anova_f: runs an anova on every channel-time sample and returns a logical matrix (channels x time) with the above-threshold samples
+- identify_clusters: identify clusters of activity in the F matrix produced by anova_f
+- anova_perm: permutes the conditions (labels) and computes the Fperm matrix (similar to F but based on permuted data).
