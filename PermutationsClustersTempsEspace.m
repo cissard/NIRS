@@ -45,26 +45,21 @@ imagesc(F)
 [clusters,length_clusters] = identify_clusters(F,adjacence);
 
 biggest_clusters = [];
+tic
 for perm = 1:nperm
     [Fperm] = anova_perm(donneesoxy,condition,sujet,nbabies,nt,nch);
     [length_clusters_perm] = identify_clusters(Fperm,adjacence);
     biggest_clusters = cat(2,biggest_clusters,max(length_clusters_perm));
-    
+    perm
 end
-
-histogram(biggest_clusters)
-
-%créer un compteur qui va compter le nombre de permutations ayant donné un cluster supérieur au plus grand cluster des données réelles.
-pvalues = [];
-for cl = 1:length(length_clusters)
-    counter = 0
-    for perm = 1:nperm;
-        if biggest_clusters(perm) > length_clusters(cl) ==1;
-            counter = counter+1;
-        end
-    end
-    pvalue = counter/1000;
-    pvalues = cat(2,pvalues,pvalue);
-end
-
+biggest_clusters=sort(biggest_clusters);
+hist = histogram(biggest_clusters)
 toc
+
+pvalues = [];
+for i=1:size(length_clusters,2)
+    pvalue = [];
+    n = find(biggest_clusters==length_clusters(i).length)
+    pvalue = n./1000;
+    pvalues = cat(1,pvalues,pvalue);
+end
