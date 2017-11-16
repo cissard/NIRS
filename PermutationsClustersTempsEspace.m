@@ -59,7 +59,8 @@ toc
 pvalues = [];
 for i=1:size(length_clusters,2)
     pvalue = [];
-    n = find(biggest_clusters==length_clusters(i).length)
+    n = find(biggest_clusters>length_clusters(i).length);
+    n = length(n);
     pvalue = n./1000;
     pvalues = cat(1,pvalues,pvalue);
 end
