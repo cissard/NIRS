@@ -36,7 +36,7 @@ clear('ech')
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
 %colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal.
 seuil=2.045; %définition libre, en fonction de la distribution du t ou pas.
-t_values=cell(nch,nt);
+t_values=zeros(nch,nt);
 for ch=1:nch
     for t=1:nt
         if strcmp(conditions,'AN')
@@ -50,8 +50,7 @@ for ch=1:nch
             cond2 = donneesoxy(:,3,t,ch);
         end
         [h, p, ci, stats] = ttest(cond1,cond2);
-        t_values(ch,t)=stats(1);
+        t_values(ch,t)=stats(1).tstat;
     end
 end
-t_values = cell2mat(t_values); %Matrice des valeurs de F par canal et par échantillon temporel
 t_values = t_values>= seuil;
