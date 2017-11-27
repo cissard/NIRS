@@ -1,18 +1,21 @@
-function [t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,conditions);
+function [t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,conditions,seuil);
 %construction de la matrice de données
-donneesoxy=zeros(nbabies,3,nt,nch);
+donneesoxy=zeros(nbabies,4,nt,nch);
 
 for bb=1:nbabies
-    for cond = 'ANB'
+    for cond = conditions
         for t=1:nt
             for ch=1:nch
-                if cond == 'A'
-                    donneesoxy(bb,1,t,ch)=avg(bb).(cond)(t,ch,1);
+                if cond == 'B'
+                    donneesoxy(bb,1,t,ch)=0;
                 elseif cond == 'N'
                     donneesoxy(bb,2,t,ch)=avg(bb).(cond)(t,ch,1);
-                elseif cond == 'B'
-                    donneesoxy(bb,3,t,ch)=0;
-                    
+                elseif cond == 'A'
+                    donneesoxy(bb,3,t,ch)=avg(bb).(cond)(t,ch,1);
+                elseif cond == 'C'
+                    donneesoxy(bb,3,t,ch)=avg(bb).(cond)(t,ch,1);
+                elseif cond == 'D'
+                    donneesoxy(bb,4,t,ch)=avg(bb).(cond)(t,ch,1);
                 end
             end
         end
@@ -35,19 +38,33 @@ clear('ech')
 
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
 %colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal.
-seuil=2.045; %définition libre, en fonction de la distribution du t ou pas.
 t_values=zeros(nch,nt);
 for ch=1:nch
     for t=1:nt
-        if strcmp(conditions,'AN')
-            cond1 = donneesoxy(:,1,t,ch);
+        if strcmp(conditions,'AN') || strcmp(conditions,'NA')
+            cond1 = donneesoxy(:,3,t,ch);
             cond2 = donneesoxy(:,2,t,ch);
-        elseif strcmp(conditions,'AB')
-            cond1 = donneesoxy(:,1,t,ch);
-            cond2 = donneesoxy(:,3,t,ch);
-        elseif strcmp(conditions,'NB')
+        elseif strcmp(conditions,'NC') || strcmp(conditions,'CN')
             cond1 = donneesoxy(:,2,t,ch);
             cond2 = donneesoxy(:,3,t,ch);
+        elseif strcmp(conditions,'ND') || strcmp(conditions,'DN')
+            cond1 = donneesoxy(:,2,t,ch);
+            cond2 = donneesoxy(:,4,t,ch);
+        elseif strcmp(conditions,'AB') || strcmp(conditions,'BA')
+            cond1 = donneesoxy(:,3,t,ch);
+            cond2 = donneesoxy(:,1,t,ch);
+        elseif strcmp(conditions,'NB') || strcmp(conditions,'BN')
+            cond1 = donneesoxy(:,2,t,ch);
+            cond2 = donneesoxy(:,1,t,ch);
+        elseif strcmp(conditions,'CB') || strcmp(conditions,'BC')
+            cond1 = donneesoxy(:,3,t,ch);
+            cond2 = donneesoxy(:,1,t,ch);
+        elseif strcmp(conditions,'DB') || strcmp(conditions,'DB')
+            cond1 = donneesoxy(:,4,t,ch);
+            cond2 = donneesoxy(:,1,t,ch);
+        elseif strcmp(conditions,'CD') || strcmp(conditions,'DC')
+            cond1 = donneesoxy(:,4,t,ch);
+            cond2 = donneesoxy(:,1,t,ch);
         end
         [h, p, ci, stats] = ttest(cond1,cond2);
         t_values(ch,t)=stats(1).tstat;
