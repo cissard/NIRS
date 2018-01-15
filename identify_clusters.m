@@ -1,4 +1,4 @@
-function [clusters,length_clusters]=identify_clusters(F,adjacence)
+function [length_clusters,clusters]=identify_clusters(F,adjacence)
 % --------Part adapted from scripts written by María Clemencia Ortiz Barajas-----------%
 %trouver s'il existe des régions d'activité dans les données originales
 [active_ch,active_t] = find(F);
