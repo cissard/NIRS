@@ -1,5 +1,5 @@
 function [length_clusters,clusters]=identify_clusters(F,adjacence)
-%--------Part adapted from scripts written by María Clemencia Ortiz Barajas-----------%
+%% --------Part adapted from scripts written by María Clemencia Ortiz Barajas-----------%
 %trouver s'il existe des régions d'activité dans les données originales
 [active_ch,active_t] = find(F);
 active_ch = unique(active_ch);
@@ -31,7 +31,7 @@ for k1 = 1:length(active_ch)
     nb_moments = cat(2,nb_moments,nclusters); % nombre de moments d'activité par canal
     clear limH limL slide activity_temp t_who1 who1 cont
 end
-%------------------------------------------------------------------------%
+%% ------------------------------------------------------------------------%
 %locate clusters
 clusters = struct;
 for c1 = 1:size(activity,2)
@@ -75,20 +75,26 @@ end
 %merge connected clusters
 for i = 1:length(clusters)
     for j = i+1:length(clusters)
-        if length(clusters(i).channels) > 1 && length(clusters(j).channels)> 1 ...
+        if length(clusters(i).channels) > 1 && length(clusters(j).channels)> 1 ...% cases with one channel treated above
                 && ~isempty(intersect(clusters(i).channels,clusters(j).channels)) ...
-                && ~isempty(intersect(clusters(i).start,clusters(j).start))
+                && ~isempty(intersect(clusters(i).start,clusters(j).start))% same ch same time
             
             inter_ch = intersect(clusters(i).channels,clusters(j).channels);
-            pos = find(clusters(j).channels==inter_ch);
-            clusters(j).channels(pos) = [];
-            clusters(j).start = ;
-            clusters(j).end = ;
+            pos = find(clusters(i).channels==inter_ch);
+            clusters(i).channels(pos) = [];
+            clusters(i).start(pos) = [];
+            clusters(i).end(pos) = [];
+            clusters(i).length(pos) = [];
+            clusters(i).usage = 1;
 %             clusters(j).channels = unique([clusters(i).channels clusters(j).channels]);
 %             clusters(j).start = unique([clusters(i).start clusters(j).start]);
 %             clusters(j).end = unique([clusters(i).end clusters(j).end]);
 %             clusters(j).length = unique([clusters(i).length clusters(j).length]);
-            clusters(i).usage = 1;
+            clusters(j).channels = cat(2,clusters(i).channels,clusters(j).channels);
+            clusters(j).start = cat(2,clusters(i).start,clusters(j).start);
+            clusters(j).end = cat(2,clusters(i).end,clusters(j).end);
+            clusters(j).length = cat(2,clusters(i).length,clusters(j).length);
+            
         end
     end
 end
