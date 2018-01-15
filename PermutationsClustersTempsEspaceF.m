@@ -1,8 +1,6 @@
 %Script écrit par Cécile Issard, doctorante au laboratoire psychologie de
 %la perception, Université Paris Descartes
-
-tic
-
+%%
 nbabies = length(avg);
 nt = length(avg(1).N);
 nch = 24;
@@ -41,10 +39,11 @@ adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 
 [donneesoxy, condition, sujet, F] = anova_f(avg,nbabies,nt,nch);
 imagesc(F)
-
-[clusters,length_clusters] = identify_clusters(F,adjacence);
+%%
+[length_clusters,clusters] = identify_clusters(F,adjacence);
 
 biggest_clusters = [];
+%%
 tic
 for perm = 1:nperm
     [Fperm] = anova_perm(donneesoxy,condition,sujet,nbabies,nt,nch);
