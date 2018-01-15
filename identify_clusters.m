@@ -1,5 +1,5 @@
-function [length_clusters,clusters]=identify_clusters(F,adjacence)
-%% --------Part adapted from scripts written by María Clemencia Ortiz Barajas-----------%
+function [clusters,length_clusters]=identify_clusters(F,adjacence)
+% --------Part adapted from scripts written by María Clemencia Ortiz Barajas-----------%
 %trouver s'il existe des régions d'activité dans les données originales
 [active_ch,active_t] = find(F);
 active_ch = unique(active_ch);
@@ -31,7 +31,7 @@ for k1 = 1:length(active_ch)
     nb_moments = cat(2,nb_moments,nclusters); % nombre de moments d'activité par canal
     clear limH limL slide activity_temp t_who1 who1 cont
 end
-%% ------------------------------------------------------------------------%
+% ------------------------------------------------------------------------%
 %locate clusters
 clusters = struct;
 for c1 = 1:size(activity,2)
@@ -86,10 +86,7 @@ for i = 1:length(clusters)
             clusters(i).end(pos) = [];
             clusters(i).length(pos) = [];
             clusters(i).usage = 1;
-%             clusters(j).channels = unique([clusters(i).channels clusters(j).channels]);
-%             clusters(j).start = unique([clusters(i).start clusters(j).start]);
-%             clusters(j).end = unique([clusters(i).end clusters(j).end]);
-%             clusters(j).length = unique([clusters(i).length clusters(j).length]);
+
             clusters(j).channels = cat(2,clusters(i).channels,clusters(j).channels);
             clusters(j).start = cat(2,clusters(i).start,clusters(j).start);
             clusters(j).end = cat(2,clusters(i).end,clusters(j).end);
