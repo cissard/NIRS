@@ -43,7 +43,7 @@ adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 [t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,cond,seuil);
 imagesc(t_values)
 
-[clusters,length_clusters] = identify_clusters(t_values,adjacence);
+[length_clusters,clusters] = identify_clusters(t_values,adjacence);
 %% 
 
 biggest_clusters = [];
