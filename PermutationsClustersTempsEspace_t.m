@@ -1,14 +1,17 @@
-%Script ï¿½crit par Cï¿½cile Issard, doctorante au laboratoire psychologie de
-%la perception, Universitï¿½ Paris Descartes
-
+%Script écrit par Cécile Issard, doctorante au laboratoire psychologie de
+%la perception, Université Paris Descartes
+%%
 nbabies = length(avg);
 nt = length(avg(1).N);
 nch = 24;
 nperm = 500;
+cond = 'BN';
+seuil = 2.042; %définition en fonction de la table du t
 
-%construction de la matrice d'adjacence qui spï¿½cifie les relations entre
+%construction de la matrice d'adjacence qui spécifie les relations entre
 %les canaux
 adjacence = logical(zeros(nch,nch));
+
 
 %-----------------------si nch ~= 24 adapter les lignes ci-dessous--------%
 adjacence(1,2)=1;adjacence(1,3)=1;adjacence(1,4)=1;
@@ -37,22 +40,28 @@ adjacence(23,20)=1;adjacence(23,21)=1;adjacence(23,24)=1;
 adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 % ----------------------------------------------------------------------------------------------
 
-[t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,'AN');
+[t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,cond,seuil);
 imagesc(t_values)
 
 [clusters,length_clusters] = identify_clusters(t_values,adjacence);
+%% 
 
 biggest_clusters = [];
 tic
 for perm = 1:nperm
-    [t_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,'AN');
-    [length_clusters_perm] = identify_clusters(t_perm,adjacence);
-    biggest_clusters = cat(2,biggest_clusters,max(length_clusters_perm));
-    perm
+    [t_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,cond,seuil);
+    if ~isempty(find(t_perm))
+        [length_clusters_perm] = identify_clusters(t_perm,adjacence);
+        biggest_clusters = cat(2,biggest_clusters,max(length_clusters_perm));
+        perm
+    else
+        biggest_clusters = cat(2,biggest_clusters,0);
+    end
 end
 toc
 biggest_clusters=sort(biggest_clusters);
 hist = histogram(biggest_clusters)
+%% 
 
 
 pvalues = [];
