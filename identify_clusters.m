@@ -58,8 +58,8 @@ for l1 = 1:length(clusters)
     clusters(l1).usage=0;
     for l2 = 1:l1-1
         if length(clusters(l1).channels)==1 && length(clusters(l2).channels)>1 ...
-            && ~isempty(intersect(clusters(l1).channels,clusters(l2).channels)) ...
-            && ~isempty(intersect(clusters(l1).start,clusters(l2).start))
+                && ~isempty(intersect(clusters(l1).channels,clusters(l2).channels)) ...
+                && ~isempty(intersect(clusters(l1).start,clusters(l2).start))
             clusters(l1).usage=1;
             
         end
@@ -76,16 +76,21 @@ end
 for i = 1:length(clusters)
     for j = i+1:length(clusters)
         if length(clusters(i).channels) > 1 && length(clusters(j).channels)> 1 ...
-            && ~isempty(intersect(clusters(i).channels,clusters(j).channels)) ...
-            && ~isempty(intersect(clusters(i).start,clusters(j).start))
+                && ~isempty(intersect(clusters(i).channels,clusters(j).channels)) ...
+                && ~isempty(intersect(clusters(i).start,clusters(j).start))
             
-        clusters(j).channels = unique([clusters(i).channels clusters(j).channels]);
-        clusters(j).start = unique([clusters(i).start clusters(j).start]);
-        clusters(j).end = unique([clusters(i).end clusters(j).end]);
-        clusters(j).length = unique([clusters(i).length clusters(j).length]);
-        clusters(i).usage = 1;
+            inter_ch = intersect(clusters(i).channels,clusters(j).channels);
+            pos = find(clusters(j).channels==inter_ch);
+            clusters(j).channels(pos) = [];
+            clusters(j).start = ;
+            clusters(j).end = ;
+%             clusters(j).channels = unique([clusters(i).channels clusters(j).channels]);
+%             clusters(j).start = unique([clusters(i).start clusters(j).start]);
+%             clusters(j).end = unique([clusters(i).end clusters(j).end]);
+%             clusters(j).length = unique([clusters(i).length clusters(j).length]);
+            clusters(i).usage = 1;
         end
-    end  
+    end
 end
 
 for l1 = fliplr(1:size(clusters,2))
@@ -100,4 +105,5 @@ end
 length_clusters = zeros(size(clusters,2),1);
 for i = 1:size(clusters,2)
     length_clusters(i,1) = clusters(i).length;
+    %     length(min(clusters(i).start):max(clusters(i).end))
 end
