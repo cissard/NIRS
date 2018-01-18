@@ -59,7 +59,9 @@ for l1 = 1:length(clusters)
     for l2 = 1:l1-1
         if length(clusters(l1).channels)==1 && length(clusters(l2).channels)>1 ...
                 && ~isempty(intersect(clusters(l1).channels,clusters(l2).channels)) ...
-                && ~isempty(intersect(clusters(l1).start,clusters(l2).start))
+                && ~isempty(intersect(clusters(l1).start,clusters(l2).start))...
+                && ~isempty(intersect(clusters(l1).end,clusters(l2).end))
+            
             clusters(l1).usage=1;
             
         end
@@ -77,21 +79,28 @@ for i = 1:length(clusters)
     for j = i+1:length(clusters)
         if length(clusters(i).channels) > 1 && length(clusters(j).channels)> 1 ...% cases with one channel treated above
                 && ~isempty(intersect(clusters(i).channels,clusters(j).channels)) ...
-                && ~isempty(intersect(clusters(i).start,clusters(j).start))% same ch same time
+                && ~isempty(intersect(clusters(i).start,clusters(j).start)) ...
+                && ~isempty(intersect(clusters(i).end,clusters(j).end))
             
             inter_ch = intersect(clusters(i).channels,clusters(j).channels);
-            pos = find(clusters(i).channels==inter_ch);
-            clusters(i).channels(pos) = [];
-            clusters(i).start(pos) = [];
-            clusters(i).end(pos) = [];
-            clusters(i).length(pos) = [];
-            clusters(i).usage = 1;
-
-            clusters(j).channels = cat(2,clusters(i).channels,clusters(j).channels);
-            clusters(j).start = cat(2,clusters(i).start,clusters(j).start);
-            clusters(j).end = cat(2,clusters(i).end,clusters(j).end);
-            clusters(j).length = cat(2,clusters(i).length,clusters(j).length);
-            
+            for k = 1:length(inter_ch)
+                pos = find(clusters(i).channels==inter_ch(k));
+                if ~isempty(intersect(clusters(i).start(pos),clusters(j).start)) ...
+                        && ~isempty(intersect(clusters(i).end(pos),clusters(j).end))...
+                        && length(intersect(clusters(i).end(pos),clusters(j).end) == length(clusters(i).end(pos))) % same ch same time
+                    
+                    clusters(i).channels(pos) = [];
+                    clusters(i).start(pos) = [];
+                    clusters(i).end(pos) = [];
+                    clusters(i).length(pos) = [];
+                    clusters(i).usage = 1;
+                    
+                    clusters(j).channels = cat(2,clusters(i).channels,clusters(j).channels);
+                    clusters(j).start = cat(2,clusters(i).start,clusters(j).start);
+                    clusters(j).end = cat(2,clusters(i).end,clusters(j).end);
+                    clusters(j).length = cat(2,clusters(i).length,clusters(j).length);
+                end
+            end
         end
     end
 end
