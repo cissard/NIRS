@@ -42,11 +42,11 @@ for c1 = 1:size(activity,2)
         A = activity(2,c1):activity(3,c1);
         B = activity(2,c2):activity(3,c2);
         inter = intersect(A,B);
-        if adjacence(activity(1,c1),activity(1,c2)) && c1~=c2 && ~isempty(inter)
-            
+        if adjacence(activity(1,c1),activity(1,c2)) && c1~=c2 && ~isempty(inter)  
             cluster = cat(2,cluster,activity(:,c2));
         end
-    end
+    end %create a cluster for each channel with activity
+    %save
     clusters(c1).channels = cluster(1,:);
     clusters(c1).start = cluster(2,:);
     clusters(c1).end = cluster(3,:);
@@ -56,14 +56,13 @@ end
 %remove one-channel clusters that are part of a bigger cluster
 for l1 = 1:length(clusters)
     clusters(l1).usage=0;
-    for l2 = 1:l1-1
+    for l2 = 1:l1-1 %look up previous clusters
         if length(clusters(l1).channels)==1 && length(clusters(l2).channels)>1 ...
                 && ~isempty(intersect(clusters(l1).channels,clusters(l2).channels)) ...
                 && ~isempty(intersect(clusters(l1).start,clusters(l2).start))...
                 && ~isempty(intersect(clusters(l1).end,clusters(l2).end))
             
-            clusters(l1).usage=1;
-            
+                clusters(l1).usage=1;
         end
     end
 end
@@ -80,14 +79,17 @@ for i = 1:length(clusters)
         if length(clusters(i).channels) > 1 && length(clusters(j).channels)> 1 ...% cases with one channel treated above
                 && ~isempty(intersect(clusters(i).channels,clusters(j).channels)) ...
                 && ~isempty(intersect(clusters(i).start,clusters(j).start)) ...
-                && ~isempty(intersect(clusters(i).end,clusters(j).end))
+                && ~isempty(intersect(clusters(i).end,clusters(j).end))...
+                && ~isempty(intersect(clusters(i).length,clusters(j).length))
             
             inter_ch = intersect(clusters(i).channels,clusters(j).channels);
             for k = 1:length(inter_ch)
                 pos = find(clusters(i).channels==inter_ch(k));
                 if ~isempty(intersect(clusters(i).start(pos),clusters(j).start)) ...
                         && ~isempty(intersect(clusters(i).end(pos),clusters(j).end))...
-                        && length(intersect(clusters(i).end(pos),clusters(j).end) == length(clusters(i).end(pos))) % same ch same time
+                        && ~isempty(intersect(clusters(i).length,clusters(j).length))...
+                        && length(intersect(clusters(i).start(pos),clusters(j).start)) == length(clusters(i).start(pos))...
+                           == length(intersect(clusters(i).end(pos),clusters(j).end)) == length(clusters(i).end(pos)) % same ch same time
                     
                     clusters(i).channels(pos) = [];
                     clusters(i).start(pos) = [];
