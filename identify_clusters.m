@@ -89,7 +89,8 @@ for i = 1:length(clusters)
                         && ~isempty(intersect(clusters(i).end(pos),clusters(j).end))...
                         && ~isempty(intersect(clusters(i).length,clusters(j).length))...
                         && length(intersect(clusters(i).start(pos),clusters(j).start)) == length(clusters(i).start(pos))...
-                           == length(intersect(clusters(i).end(pos),clusters(j).end)) == length(clusters(i).end(pos)) % same ch same time
+                           == length(intersect(clusters(i).end(pos),clusters(j).end)) == length(clusters(i).end(pos))
+                           == length(intersect(clusters(i).length(pos),clusters(j).length)) == length(clusters(i).length(pos))% same ch same time
                     
                     clusters(i).channels(pos) = [];
                     clusters(i).start(pos) = [];
