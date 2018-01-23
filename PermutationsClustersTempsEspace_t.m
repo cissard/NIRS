@@ -63,11 +63,10 @@ biggest_clusters=sort(biggest_clusters);
 hist = histogram(biggest_clusters)
 %% 
 
-
 pvalues = [];
-for i=1:size(length_clusters,2)
+for i=1:size(length_clusters,1)
     pvalue = [];
-    n = find(biggest_clusters>length_clusters(i).length);
+    n = find(biggest_clusters>length_clusters(i));
     n = length(n);
     pvalue = n./nperm;
     pvalues = cat(1,pvalues,pvalue);
