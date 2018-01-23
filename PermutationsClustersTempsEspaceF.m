@@ -39,7 +39,7 @@ adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 
 [donneesoxy, condition, sujet, F] = anova_f(avg,nbabies,nt,nch);
 imagesc(F)
-%%
+
 [length_clusters,clusters] = identify_clusters(F,adjacence);
 
 biggest_clusters = [];
@@ -56,9 +56,9 @@ hist = histogram(biggest_clusters)
 toc
 
 pvalues = [];
-for i=1:size(length_clusters,2)
+for i=1:size(length_clusters,1)
     pvalue = [];
-    n = find(biggest_clusters>length_clusters(i).length);
+    n = find(biggest_clusters>length_clusters(i));
     n = length(n);
     pvalue = n./1000;
     pvalues = cat(1,pvalues,pvalue);
