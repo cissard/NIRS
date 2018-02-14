@@ -38,36 +38,33 @@ for t = 1:length(data)
     OD_wl1(t,:)=abs(sig_wl1(t,:)./baseline_wl1); 
     OD_wl2(t,:)=abs(sig_wl2(t,:)./baseline_wl2);
 end
-% compute log (optical density)
+% compute log(optical density)
 OD_wl1 = -log(OD_wl1);
 OD_wl2 = -log(OD_wl2);
 
 OD = [OD_wl1 ; OD_wl2];
 
 %Modified Beer-Lambert law
-a=[a_hb_wl1 a_hbo_wl1 ; a_hb_wl2  a_hbo_wl2];
+A=[a_hbo_wl1 a_hb_wl1 ; a_hbo_wl2  a_hb_wl2];
 
-ae = [a_hb_wl1*DPF1 a_hbo_wl1*DPF1 ; a_hb_wl2*DPF2 a_hbo_wl2*DPF2]*Distance;
-
-
-% aC_wl1=OD_wl1/(DPF1*Distance);
-% aC_wl2=OD_wl2/(DPF2*Distance);
+aC_wl1=OD_wl1/(DPF1*Distance);
+aC_wl2=OD_wl2/(DPF2*Distance);
 
 % Hb = zeros(length(data),cfg.nch);
 % HbO = zeros(length(data),cfg.nch);
 
 
 for ch = 1:cfg.nch;
-    chn = [OD_wl1(:,ch) OD_wl2(:,ch)]';
-    Hb_HbO = ae\chn;
-    Hb_HbO = Hb_HbO';
+    B = [aC_wl1(:,ch) aC_wl2(:,ch)]';
+    HbO_Hb = A\B;
+    HbO_Hb = HbO_Hb';
     %Code Ardalan
 %     ainv = inv( a'*a )*a';
 %     Hb_HbO = ainv*chn;
 %     Hb_HbO = Hb_HbO';
 
-    Hb(:,ch) = Hb_HbO(:,1);
-    HbO(:,ch) = Hb_HbO(:,2);
+    HbO(:,ch) = HbO_Hb(:,1);
+    Hb(:,ch) = HbO_Hb(:,2);
 end
 
 % h1=figure;plot(Hb(:,:));saveas(h1,cfg.pID,'jpg');

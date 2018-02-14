@@ -12,11 +12,18 @@ wl2 = importdata(wl2file,' ',0);
 
 hdrfile = sprintf('%s.hdr',cfg.pID);
 hdr = importdata(hdrfile,'\t',38);
+SD = importdata(hdrfile,'\t',91)
+cfg.SD = SD.data
+clear SD
 
 wls=cat(3,wl1,wl2);
 
 ch=find(cfg.SD);
 data = zeros(length(wl1),cfg.nch,cfg.nwls);
+if ~cfg.nch == length(ch)
+    ('cfg.nch doesnt match SD structure in hdr file')
+end
+
 for c=1:cfg.nch
     idx=ch(c);
     data(:,c,:)=wls(:,idx,:);
@@ -28,4 +35,3 @@ end
 %sent, and 3rd is the nb of the marked time sample.
 marks = hdr.data(:,2:3);
 end
-
