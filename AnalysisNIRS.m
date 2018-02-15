@@ -1,18 +1,5 @@
 % clear all;close all;clc;
 bb = 1
-%Specify channels (source-detectors pairs)
-% SD=false(8,10);
-% SD(1,1)=true;SD(1,2)=true;SD(1,3)=true;
-% SD(2,1)=true;SD(2,2)=true;SD(2,4)=true;
-% SD(3,2)=true;SD(3,3)=true;SD(3,5)=true;
-% SD(4,2)=true;SD(4,4)=true;SD(4,5)=true;
-% SD(5,6)=true;SD(5,7)=true;SD(5,8)=true;
-% SD(6,6)=true;SD(6,7)=true;SD(6,9)=true;
-% SD(7,7)=true;SD(7,8)=true;SD(7,10)=true;
-% SD(8,7)=true;SD(8,9)=true;SD(8,10)=true;
-% SD=transpose(SD);
-% cfg.SD = SD;
-% clear SD
 
 cfg.sf = 15.625;
 cfg.nwls=2;
