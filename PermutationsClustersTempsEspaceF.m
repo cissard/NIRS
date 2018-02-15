@@ -42,13 +42,14 @@ imagesc(F)
 
 [length_clusters,clusters] = identify_clusters(F,adjacence);
 
-biggest_clusters = [];
 %%
+biggest_clusters = zeros(1,nperm);
+
 tic
-for perm = 1:nperm
+parfor perm = 1:nperm
     [Fperm] = anova_perm(donneesoxy,condition,sujet,nbabies,nt,nch);
     [length_clusters_perm] = identify_clusters(Fperm,adjacence);
-    biggest_clusters = cat(2,biggest_clusters,max(length_clusters_perm));
+    biggest_clusters(1,perm) = max(length_clusters_perm);
     perm
 end
 biggest_clusters=sort(biggest_clusters);
