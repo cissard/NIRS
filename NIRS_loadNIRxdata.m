@@ -1,4 +1,4 @@
-function [data marks] = loadNIRxdata(cfg);
+function [cfg,data marks] = loadNIRxdata(cfg);
 cfg.dir = pwd; 
 cd(cfg.dir)
 cfg.files = dir('NIRS-*');

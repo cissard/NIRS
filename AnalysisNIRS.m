@@ -10,7 +10,7 @@ cfg.nd = 10;
 cfg.artifactperiod = 0.2; %in seconds
 cfg.artifactthreshold = 0.05;
 
-[data, marks] = NIRS_loadNIRxdata(cfg);
+[cfg,data, marks] = NIRS_loadNIRxdata(cfg);
 cfg.nblocks = length(marks)/2;
 
 [baseline] = NIRS_baseline(cfg,data,marks,5,15);
