@@ -14,14 +14,15 @@ cfg.artifactthreshold = 0.05;
 cfg.nblocks = length(marks)/2;
 
 [baseline] = NIRS_baseline(cfg,data,marks,5,15);
-[Hb, HbO] = NIRS_light2Hb(cfg,data,baseline);
+[baseline_mean] = mean(data,1);[baseline_mean] = squeeze(baseline_mean);
+[Hb, HbO] = NIRS_light2Hb(cfg,data,baseline_mean);
 %filter 
-[b, a] = butter(1,[0.01 0.5]*2/cfg.sf,'bandpass');
+[b, a] = butter(1,[0.01 0.5]/(cfg.sf/2),'bandpass');
 Hbf = filtfilt(b,a,Hb);
 HbOf = filtfilt(b,a,HbO);
 clear b a
-% h1=figure;plot(Hbf(:,:));saveas(h1,cfg.pID,'jpg');
-% h2=figure;plot(HbOf(:,:));saveas(h2,cfg.pID,'jpg');
+h1=figure;plot(Hbf(:,:));saveas(h1,cfg.pID,'jpg');
+h2=figure;plot(HbOf(:,:));saveas(h2,cfg.pID,'jpg');
 
 %epochs = [time * channels * blocks * Hb)
 [length_blocks,epochs] = NIRS_defineepochs(cfg,Hbf,HbOf,marks,5,15);
