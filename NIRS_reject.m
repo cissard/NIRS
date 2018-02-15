@@ -11,19 +11,19 @@ for b=1:cfg.nblocks
     for ch=1:24
         h = subplot(4,6,ch);
         hold on
-        plot(epochsdt(:,ch,b,1),'b')
-        plot(epochsdt(:,ch,b,2),'r')
-        set(h,'xlim',[0 size(epochsdt,1)])
+        plot(epochs(:,ch,b,1),'b')
+        plot(epochs(:,ch,b,2),'r')
+        set(h,'xlim',[0 size(epochs,1)])
         set(h,'xtick',[begstim endstim])
         set(gca,'xticklabel',[0 round(length_blocks/cfg.sf)])
         timeX=[0,time];%tracer l'axe des abcisses au centre
 		timeY=[0,0];
 		line(timeX,timeY,'Color','k');
         startX=[begstim,begstim];%barre verticale pour marquer le début de la stimulation
-		startY=[min(epochsdt(:,ch,b,2)),max(epochsdt(:,ch,b,2))];
+		startY=[min(epochs(:,ch,b,2)),max(epochs(:,ch,b,2))];
 		line(startX,startY,'Color','k');
         endX=[endstim,endstim];%barre verticale pour marquer la fin de la stimulation
-		endY=[min(epochsdt(:,ch,b,2)),max(epochsdt(:,ch,b,2))];
+		endY=[min(epochs(:,ch,b,2)),max(epochs(:,ch,b,2))];
         line(endX,endY,'Color','k');
     end
     %manually reject bad trials for all channels
