@@ -18,15 +18,15 @@ clear SD
 
 wls=cat(3,wl1,wl2);
 
-ch=find(cfg.SD);
+ch=find(cfg.SD');
 data = zeros(length(wl1),cfg.nch,cfg.nwls);
 if ~cfg.nch == length(ch)
     ('cfg.nch doesnt match SD structure in hdr file')
 end
 
 for c=1:cfg.nch
-    idx=ch(c);
-    data(:,c,:)=wls(:,idx,:);
+    col_idx=ch(c);
+    data(:,c,:)=wls(:,col_idx,:);
 end
 % h1=figure;plot(data(:,:,1));saveas(h1,cfg.pID,'jpg');
 % h2=figure;plot(data(:,:,2));saveas(h2,cfg.pID,'jpg');

@@ -42,29 +42,29 @@ end
 OD_wl1 = -log(OD_wl1);
 OD_wl2 = -log(OD_wl2);
 
-OD = [OD_wl1 ; OD_wl2];
-
 %Modified Beer-Lambert law
 A=[a_hbo_wl1 a_hb_wl1 ; a_hbo_wl2  a_hb_wl2];
 
 aC_wl1=OD_wl1/(DPF1*Distance);
 aC_wl2=OD_wl2/(DPF2*Distance);
 
-% Hb = zeros(length(data),cfg.nch);
-% HbO = zeros(length(data),cfg.nch);
+Hb = zeros(length(data),cfg.nch);
+HbO = zeros(length(data),cfg.nch);
 
 
 for ch = 1:cfg.nch;
-    B = [aC_wl1(:,ch) aC_wl2(:,ch)]';
-    HbO_Hb = A\B;
-    HbO_Hb = HbO_Hb';
-    %Code Ardalan
-%     ainv = inv( a'*a )*a';
-%     Hb_HbO = ainv*chn;
-%     Hb_HbO = Hb_HbO';
-
-    HbO(:,ch) = HbO_Hb(:,1);
-    Hb(:,ch) = HbO_Hb(:,2);
+    for s = 1:length(aC_wl1)
+        B = [aC_wl1(s,ch) aC_wl2(s,ch)]';
+        HbO_Hb = A\B;
+        HbO_Hb = HbO_Hb';
+        %Code Ardalan
+        %     ainv = inv( a'*a )*a';
+        %     Hb_HbO = ainv*chn;
+        %     Hb_HbO = Hb_HbO';
+        
+        HbO(s,ch) = HbO_Hb(1);
+        Hb(s,ch) = HbO_Hb(2);
+    end
 end
 
 % h1=figure;plot(Hb(:,:));saveas(h1,cfg.pID,'jpg');
