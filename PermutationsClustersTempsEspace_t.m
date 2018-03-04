@@ -4,14 +4,13 @@
 nbabies = length(avg);
 nt = length(avg(1).N);
 nch = 24;
-nperm = 500;
-cond = 'BN';
-seuil = 2.042; %définition en fonction de la table du t
+nperm = 1000;
+contrastes = {'CB','DB','NC','ND','CD'}
+seuil = 2.052; %définition en fonction de la table du t
 
 %construction de la matrice d'adjacence qui spécifie les relations entre
 %les canaux
 adjacence = logical(zeros(nch,nch));
-
 
 %-----------------------si nch ~= 24 adapter les lignes ci-dessous--------%
 adjacence(1,2)=1;adjacence(1,3)=1;adjacence(1,4)=1;
@@ -40,34 +39,39 @@ adjacence(23,20)=1;adjacence(23,21)=1;adjacence(23,24)=1;
 adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 % ----------------------------------------------------------------------------------------------
 
-[t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,cond,seuil);
-imagesc(t_values)
-
-[length_clusters,clusters] = identify_clusters(t_values,adjacence);
-%% 
-
-biggest_clusters = [];
-tic
-for perm = 1:nperm
-    [t_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,cond,seuil);
-    if ~isempty(find(t_perm))
-        [length_clusters_perm] = identify_clusters(t_perm,adjacence);
-        biggest_clusters = cat(2,biggest_clusters,max(length_clusters_perm));
-        perm
-    else
-        biggest_clusters = cat(2,biggest_clusters,0);
+for cond = 1:length(contrastes)
+    cond = contrastes{1,cond};
+    [t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,cond,seuil);
+    imagesc(t_values)
+    
+    [length_clusters,clusters] = identify_clusters(t_values,adjacence);
+    %%
+    
+    biggest_clusters = [];
+    tic
+    for perm = 1:nperm
+        [t_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,cond,seuil);
+        if ~isempty(find(t_perm))
+            [length_clusters_perm] = identify_clusters(t_perm,adjacence);
+            biggest_clusters = cat(2,biggest_clusters,max(length_clusters_perm));
+            perm
+        else
+            biggest_clusters = cat(2,biggest_clusters,0);
+        end
     end
-end
-toc
-biggest_clusters=sort(biggest_clusters);
-hist = histogram(biggest_clusters)
-%% 
-
-pvalues = [];
-for i=1:size(length_clusters,1)
-    pvalue = [];
-    n = find(biggest_clusters>length_clusters(i));
-    n = length(n);
-    pvalue = n./nperm;
-    pvalues = cat(1,pvalues,pvalue);
+    toc
+    biggest_clusters=sort(biggest_clusters);
+    hist = histogram(biggest_clusters)
+    %%
+    
+    pvalues = [];
+    for i=1:size(length_clusters,1)
+        pvalue = [];
+        n = find(biggest_clusters>length_clusters(i));
+        n = length(n);
+        pvalue = n./nperm;
+        pvalues = cat(1,pvalues,pvalue);
+    end
+    
+    save(['Ang27Judit_Nonalt_' cond],'clusters','biggest_clusters','pvalues')
 end
