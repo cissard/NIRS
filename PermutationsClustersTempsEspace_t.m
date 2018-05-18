@@ -5,8 +5,8 @@ nbabies = length(avg);
 nt = length(avg(1).N);
 nch = 24;
 nperm = 1000;
-contrastes = {'CB','DB','NC','ND','CD'}
-seuil = 2.052; %définition en fonction de la table du t
+contrastes = {'NB','CB','DB','NC','ND','CD'}
+seuil = 2.042; %définition en fonction de la table du t
 
 %construction de la matrice d'adjacence qui spécifie les relations entre
 %les canaux
@@ -73,5 +73,7 @@ for cond = 1:length(contrastes)
         pvalues = cat(1,pvalues,pvalue);
     end
     
-    save(['Ang27Judit_Nonalt_' cond],'clusters','biggest_clusters','pvalues')
+    clusters = rmfield(clusters, 'usage');
+%     clusters.pvalues = pvalues
+    save(['Ang32_Nonalt_' cond],'clusters','biggest_clusters','pvalues')
 end

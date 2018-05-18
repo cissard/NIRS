@@ -21,6 +21,7 @@ for b = 2:length(end_blocks)-1 %don't use the first and last blocks as they were
     baselines = cat(1,baselines,baseline);
 end
 
+%mean value for each channel*wavelength
 baselines = cat(1,baselines,baseline_end);
 baseline_mean = mean(baselines,1);
 baseline_mean = squeeze(baseline_mean);

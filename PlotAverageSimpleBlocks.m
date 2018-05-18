@@ -65,7 +65,7 @@ for ch=1:24
         %deoxy
         Y = [(avg(:,chnl,cond,1)+sem(:,chnl,cond,1))' fliplr((avg(:,chnl,cond,1)-sem(:,chnl,cond,1))')];
         p = patch(X,Y,colorSEMHb(cond,:));
-        p.FaceAlpha = .3;
+        p.FaceAlpha = .2;
         p.EdgeColor = 'none';
         if cond==3
         h(cond) = plot(avg(:,chnl,cond,1),'Color',colorMeanHb(cond,:),'LineStyle','--','LineWidth',1);
@@ -75,7 +75,7 @@ for ch=1:24
         %oxy
         Y = [(avg(:,chnl,cond,2)+sem(:,chnl,cond,2))' fliplr((avg(:,chnl,cond,2)-sem(:,chnl,cond,2))')];
         p = patch(X,Y,colorSEMHbO(cond,:));
-        p.FaceAlpha = .3;
+        p.FaceAlpha = .2;
         p.EdgeColor = 'none';
         if cond==3
         h(cond) = plot(avg(:,chnl,cond,2),'Color',colorMeanHbO(cond,:),'LineStyle','--','LineWidth',1);

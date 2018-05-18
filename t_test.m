@@ -59,7 +59,7 @@ for ch=1:nch
         elseif strcmp(conditions,'CB') || strcmp(conditions,'BC')
             cond1 = donneesoxy(:,3,t,ch);
             cond2 = donneesoxy(:,1,t,ch);
-        elseif strcmp(conditions,'DB') || strcmp(conditions,'DB')
+        elseif strcmp(conditions,'DB') || strcmp(conditions,'BD')
             cond1 = donneesoxy(:,4,t,ch);
             cond2 = donneesoxy(:,1,t,ch);
         elseif strcmp(conditions,'CD') || strcmp(conditions,'DC')

@@ -46,7 +46,7 @@ imagesc(F)
 biggest_clusters = zeros(1,nperm);
 
 tic
-parfor perm = 1:nperm
+for perm = 1:nperm
     [Fperm] = anova_perm(donneesoxy,condition,sujet,nbabies,nt,nch);
     [length_clusters_perm] = identify_clusters(Fperm,adjacence);
     biggest_clusters(1,perm) = max(length_clusters_perm);
@@ -56,11 +56,13 @@ biggest_clusters=sort(biggest_clusters);
 hist = histogram(biggest_clusters)
 toc
 
-pvalues = [];
+pvalues = zeros(size(length_clusters,1),1);
 for i=1:size(length_clusters,1)
     pvalue = [];
     n = find(biggest_clusters>length_clusters(i));
     n = length(n);
-    pvalue = n./1000;
-    pvalues = cat(1,pvalues,pvalue);
+    pvalue = n./nperm;
+    pvalues(i,1) = pvalue;
 end
+
+save('Ang32_Nonalt_F','clusters','biggest_clusters','pvalues')

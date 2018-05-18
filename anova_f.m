@@ -3,7 +3,7 @@ function [donneesoxy, condition, sujet, F] = anova_f(avg,nbabies,nt,nch);
 donneesoxy=zeros(nbabies,3,nt,nch);
 
 for bb=1:nbabies
-    for cond = 'NCD'
+    for cond = 'ITN'
         for t=1:nt
             for cl=1:nch
                 if cond == 'N'
