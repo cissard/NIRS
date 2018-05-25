@@ -1,4 +1,4 @@
-function [t_values, donneesoxy] = t_test(avg,nbabies,nt,nch,conditions,seuil);
+function [t_values, h_matrix, donneesoxy] = t_test(avg,nbabies,nt,nch,conditions);
 %construction de la matrice de données
 donneesoxy=zeros(nbabies,4,nt,nch);
 
@@ -68,6 +68,7 @@ for ch=1:nch
         end
         [h, p, ci, stats] = ttest(cond1,cond2);
         t_values(ch,t)=stats(1).tstat;
+        h_matrix(ch,t) = h;
     end
 end
-t_values = t_values>= seuil;
+%t_values = t_values>= seuil;

@@ -1,4 +1,4 @@
-function [length_clusters,t_clusters,clusters]=identify_clusters(h_matrix, F, adjacence)
+function [length_clusters,clusters]=identify_clusters(h_matrix, F, adjacence)
 % --------Part adapted from scripts written by María Clemencia Ortiz Barajas-----------%
 %trouver s'il existe des régions d'activité dans les données originales
 [active_ch,active_t] = find(h_matrix);
@@ -93,13 +93,16 @@ for i = 1:length(clusters)
                 && ~isempty(intersect(clusters(i).t,clusters(j).t))
             
             inter_ch = intersect(clusters(i).channels,clusters(j).channels);
-            
             for k = 1:length(inter_ch)
                 pos1 = find(clusters(i).channels==inter_ch(k));
                 pos2 = find(clusters(j).channels==inter_ch(k));
                 if ~isempty(intersect(clusters(i).start(pos1),clusters(j).start(pos2))) ...
                         && ~isempty(intersect(clusters(i).end(pos1),clusters(j).end(pos2)))...
                         && ~isempty(intersect(clusters(i).length,clusters(j).length(pos2)))
+                    %                     ...
+                    %                         && length(intersect(clusters(i).start(pos),clusters(j).start)) == length(clusters(i).start(pos))...
+                    %                            == length(intersect(clusters(i).end(pos),clusters(j).end)) == length(clusters(i).end(pos))...
+                    %                            == length(intersect(clusters(i).length(pos),clusters(j).length)) == length(clusters(i).length(pos))% same ch same time
                     
                     clusters(i).channels(pos1) = [];
                     clusters(i).start(pos1) = [];
@@ -136,5 +139,3 @@ for i = 1:size(clusters,2)
     t_clusters(i,1) = clusters(i).t;
     %     length(min(clusters(i).start):max(clusters(i).end))
 end
-
-clusters = rmfield(clusters,'usage');

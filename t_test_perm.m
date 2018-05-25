@@ -1,4 +1,4 @@
-function [t_values] = t_test(donneesoxy,nbabies,nt,nch,conditions,seuil);
+function [t_values, h_matrix] = t_test(donneesoxy,nbabies,nt,nch,conditions);
 
 P = [];
 for bb=1:nbabies;
@@ -10,7 +10,7 @@ end
 
 %on remplit la variable vd qui contiendra les concentrations en hb (vecteur
 %colonne avec les conditions l'une après l'autre). Refait à chaque échantillon-canal.
-seuil=2.045; %définition libre, en fonction de la distribution du t ou pas.
+%seuil=2.045; %définition libre, en fonction de la distribution du t ou pas.
 t_values=zeros(nch,nt);
 for ch=1:nch
     for t=1:nt
@@ -41,6 +41,7 @@ for ch=1:nch
         end
         [h, p, ci, stats] = ttest(cond1,cond2);
         t_values(ch,t) = stats(1).tstat;
+        h_matrix(ch,t) = h;
     end
 end
-t_values = t_values>= seuil;
+%t_values = t_values>= seuil;

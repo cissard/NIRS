@@ -1,4 +1,4 @@
-function [Fperm] = anova_f(donneesoxy,condition,sujet,nbabies,nt,nch);
+function [Fperm, h_perm] = anova_f(donneesoxy,condition,sujet,nbabies,nt,nch);
 
 P = [];
 for bb=1:nbabies;
@@ -20,4 +20,7 @@ for ch=1:nch
     end
 end
 Fperm = cell2mat(Fperm); %Matrice des valeurs de F par canal et par échantillon temporel
-Fperm = Fperm>= seuil;
+h_matrix = zeros(ch,t);
+sig=find(p_values <= 0.05));
+h_matrix(sig)=1;
+
