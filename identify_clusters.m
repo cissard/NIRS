@@ -27,7 +27,9 @@ for k1 = 1:length(active_ch)
     activity_temp(2,:) = t_who1(limL); % échantillon où commence le(s) cluster(s)
     activity_temp(3,:) = t_who1(limH); % échantillon où s'arrête le(s) cluster(s)
     activity_temp(4,:) = t_who1(limH) - t_who1(limL) +1; % durée du/des cluster(s)
-    activity_temp(5,:) = sum(F(who1,t_who1(limL):t_who1(limH))); %t-value
+   for col = 1:size(activity_temp,2)
+       activity_temp(5,col) = sum(abs(F(who1,t_who1(limL(col)):t_who1(limH(col))))); %t-value
+   end
     activity = cat(2,activity,activity_temp);
     nb_moments = cat(2,nb_moments,nclusters); % nombre de moments d'activité par canal
     clear limH limL slide activity_temp t_who1 who1 cont
@@ -122,9 +124,11 @@ end
 
 for l1 = fliplr(1:size(clusters,2))
     clusters(l1).length = sum(clusters(l1).length);
+    clusters(l1).t = sum(abs(clusters(l1).t));
     if clusters(l1).usage == 1
         clusters(l1) = [];
     end
+%    clusters(l1).t = sum(abs(F(clusters(l1).start:clusters(l1).end)));
 end
 
 %save the length and the t-value of the clusters to replace them in the null distribution

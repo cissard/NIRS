@@ -52,5 +52,5 @@ for ch=1:nch
 end
 F = cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel
 h_matrix = zeros(ch,t);
-sig=find(p_values <= 0.05));
+sig=find(p_values <= 0.05);
 h_matrix(sig)=1;

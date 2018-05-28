@@ -5,7 +5,7 @@ nbabies = length(avg);
 nt = length(avg(1).N);
 nch = 24;
 nperm = 1000;
-contrastes = {'NB','CB','DB','NC','ND','CD'}
+%contrastes = {'NB','CB','DB','NC','ND','CD'}
 %seuil = 2.042; 
 
 %construction de la matrice d'adjacence qui spécifie les relations entre
@@ -51,7 +51,7 @@ for cond = 1:length(contrastes)
     
     tic
     for perm = 1:nperm
-        [t_perm,h_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,cond,seuil);
+        [t_perm,h_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,cond);
         if ~isempty(find(h_perm))
             [length_clusters_perm,t_clusters_perm,clusters] = identify_clusters(h_perm,t_perm,adjacence);
             biggest_clusters(1,perm) = max(t_clusters_perm);
@@ -76,5 +76,5 @@ for cond = 1:length(contrastes)
     end
     
 
-    save(['Ang32_Nonalt_' cond],'clusters','biggest_clusters','pvalues')
+    save([file '_' cond],'clusters','biggest_clusters','pvalues')
 end
