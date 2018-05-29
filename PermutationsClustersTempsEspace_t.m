@@ -53,7 +53,7 @@ for cond = 1:length(contrastes)
     for perm = 1:nperm
         [t_perm,h_perm] = t_test_perm(donneesoxy,nbabies,nt,nch,cond);
         if ~isempty(find(h_perm))
-            [length_clusters_perm,t_clusters_perm,clusters] = identify_clusters(h_perm,t_perm,adjacence);
+            [length_clusters_perm,t_clusters_perm,clusters_perm] = identify_clusters(h_perm,t_perm,adjacence);
             biggest_clusters(1,perm) = max(t_clusters_perm);
             perm
         else
