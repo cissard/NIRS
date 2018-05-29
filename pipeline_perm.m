@@ -1,5 +1,5 @@
 %%
-nt = length(avg(1).N);
+
 nch = 24;
 nperm = 1000;
 
@@ -32,11 +32,12 @@ adjacence(21,16)=1;adjacence(21,18)=1;adjacence(21,19)=1;adjacence(21,23)=1;adja
 adjacence(22,17)=1;adjacence(22,19)=1;adjacence(22,24)=1;
 adjacence(23,20)=1;adjacence(23,21)=1;adjacence(23,24)=1;
 adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
-
+%---------------------------------------------------------------------------------------------------%
 %%
 file = 'Ang32_Nonalt'
 load(file)
 nbabies = length(avg);
+nt = length(avg(1).N);
 
 PermutationsClustersTempsEspaceF
 contrastes = {'NB','CB','DB','NC','ND','CD'}
