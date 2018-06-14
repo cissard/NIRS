@@ -18,3 +18,5 @@ The following scripts and functions work with the scripts from Mehler lab:
 - anova_f: runs an anova on every channel-time sample and returns a logical matrix (channels x time) with the above-threshold samples
 - identify_clusters: identify clusters of activity in the F matrix produced by anova_f
 - anova_perm: permutes the conditions (labels) and computes the Fperm matrix (similar to F but based on permuted data).
+- t_test: performs a t-test between conditions
+- t_test_perm: permutes the data and runs a t_test with permuted data
