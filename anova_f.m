@@ -47,7 +47,7 @@ for ch=1:nch
         vd=reshape(donneesoxy(:,:,t,ch)',[],1);
         [p, table]=anovan(vd,{sujet condition},'random',1,'sstype',3,'model',3,'display','off');
         F(ch,t)=table(3,6);
-        p_values (ch,t) = p(1);
+        p_values (ch,t) = p(2);
     end
 end
 F = cell2mat(F); %Matrice des valeurs de F par canal et par échantillon temporel

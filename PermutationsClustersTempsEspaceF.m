@@ -2,7 +2,7 @@
 %la perception, Université Paris Descartes
 
 [donneesoxy, condition, sujet, F, h_matrix] = anova_f(avg,nbabies,nt,nch);
-imagesc(F)
+imagesc(h_matrix)
 
 [length_clusters,F_clusters,clusters] = identify_clusters(h_matrix,F,adjacence);
 
