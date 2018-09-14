@@ -34,12 +34,38 @@ adjacence(23,20)=1;adjacence(23,21)=1;adjacence(23,24)=1;
 adjacence(24,21)=1;adjacence(24,22)=1;adjacence(24,23)=1;
 %---------------------------------------------------------------------------------------------------%
 %%
+file = 'Esp30_Nonalt'
+load(file)
+nbabies = length(avg);
+nt = length(avg(1).N);
+
+%PermutationsClustersTempsEspaceF
+
+contrastes = {'NB','CB','DB','NC','ND','CD'}
+PermutationsClustersTempsEspace_t
+
+file = 'Esp30_AN60'
+load(file)
+contrastes = {'NB','AB','AN'}
+PermutationsClustersTempsEspace_t
+
+file = 'Esp30_AN30'
+load(file)
+contrastes = {'NB','AB','AN'}
+PermutationsClustersTempsEspace_t
+
+file = 'Esp30_ANall'
+load(file)
+contrastes = {'NB','AB','AN'}
+PermutationsClustersTempsEspace_t
+%%
 file = 'Ang32_Nonalt'
 load(file)
 nbabies = length(avg);
 nt = length(avg(1).N);
 
-PermutationsClustersTempsEspaceF
+%PermutationsClustersTempsEspaceF
+
 contrastes = {'NB','CB','DB','NC','ND','CD'}
 PermutationsClustersTempsEspace_t
 

@@ -14,7 +14,7 @@ for perm = 1:nperm
     [Fperm, h_perm] = anova_perm(donneesoxy,condition,sujet,nbabies,nt,nch);
     if ~isempty(find(h_perm))
         [length_clusters_perm, F_clusters_perm] = identify_clusters(h_perm,Fperm,adjacence);
-        biggest_clusters(1,perm) = max(t_clusters_perm);
+        biggest_clusters(1,perm) = max(length_clusters_perm);
     else
         biggest_clusters(1,perm) = 0;
     end
